@@ -1,0 +1,149 @@
+package data;
+import javax.swing.table.AbstractTableModel;
+public class TheTableModel extends AbstractTableModel {
+    private data.Group data;
+    private static int boat = -1;
+    public TheTableModel(data.Group group) {
+        this.data = group;
+    }
+
+    @Override
+    public int getRowCount() {
+        int rowCount = 0;
+        for (int i = 0; i < data.getCount(); i++) {
+            Organization currentBoat = data.getBoat(i);
+            switch (boat) {
+                case 1:
+                    if (currentBoat instanceof AircraftFactory) {
+                        rowCount++;
+                    }
+                    break;
+                case 2:
+                    if (currentBoat instanceof ShipbuildingCompany) {
+                        rowCount++;
+                    }
+                    break;
+                case 3:
+                    if (currentBoat instanceof InsuranceCompany) {
+                        rowCount++;
+                    }
+            }
+        }
+        return rowCount;
+    }
+
+    @Override
+    public int getColumnCount() {
+        return 4;
+    }
+    @Override
+    public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
+        switch (columnIndex) {
+            case 0:
+                data.getBoat(rowIndex).setName((String) aValue);
+                break;
+            case 1:
+                Organization b1 = data.getBoat(rowIndex);
+                if (b1 instanceof InsuranceCompany) {
+                    ((InsuranceCompany) b1).setPower((int) aValue);
+                }
+                break;
+            case 2:
+                Organization b2 = data.getBoat(rowIndex);
+                if (b2 instanceof ShipbuildingCompany) {
+                    ((ShipbuildingCompany) b2).setNumber_of_sails((int) aValue);
+                }
+                break;
+            case 3:
+                Organization b3 = data.getBoat(rowIndex);
+                if (b3 instanceof AircraftFactory) {
+                    ((AircraftFactory) b3).setSpeed((int) aValue);
+                }
+                break;
+        }
+    }
+
+    @Override
+    public String getColumnName(int column) {
+        switch (column) {
+            case 0:
+                return "Название";
+            case 1:
+                return "id";
+            case 2:
+                return "Тип блага";
+        }
+        return "";
+    }
+
+    @Override
+    public Object getValueAt(int rowIndex, int columnIndex) {
+        switch (columnIndex) {
+            case 0:
+                return data.getBoat(rowIndex).getName();
+            case 1: {
+                return data.getBoat(rowIndex).getId();
+            }
+            case 2: {
+                switch (boat) {
+                    case 1:
+                        Organization b1 = data.getBoat(rowIndex);
+                        if (b1 instanceof AircraftFactory)
+                            return ((AircraftFactory) b1).gettype_of_fuel();
+                        else
+                            return null;
+                    case 2:
+                        Organization b2 = data.getBoat(rowIndex);
+                        if (b2 instanceof ShipbuildingCompany)
+                            return ((ShipbuildingCompany) b2).getType_of_sails();
+                        else
+                            return null;
+                    case 3:
+                        Organization b3 = data.getBoat(rowIndex);
+                        if (b3 instanceof InsuranceCompany)
+                            return ((InsuranceCompany) b3).getPower();
+                        else
+                            return null;
+                }
+
+            }
+            case 3: {
+                switch (boat) {
+                    case 1:
+                        Organization b1 = data.getBoat(rowIndex);
+                        if (b1 instanceof AircraftFactory)
+                            return ((AircraftFactory) b1).getSpeed();
+                        else
+                            return null;
+                    case 2:
+                        Organization b2 = data.getBoat(rowIndex);
+                        if (b2 instanceof ShipbuildingCompany)
+                            return ((ShipbuildingCompany) b2).getNumber_of_sails();
+                        else
+                            return null;
+                    case 3:
+                        Organization b3 = data.getBoat(rowIndex);
+                        if (b3 instanceof InsuranceCompany)
+                            return ((InsuranceCompany) b3).getMax_thickness_of_ice();
+                        else
+                            return null ;
+                }
+
+            }
+
+        }
+        return "default";
+    }
+
+    public void delete(int ind) {
+        this.data.remove(ind);
+        fireTableDataChanged(); //Обновление таблицы после удаления
+    }
+
+    public void reload_table() {
+        fireTableDataChanged();
+    }
+    public static void setBoat(int boatIN) {
+        boat = boatIN;
+    }
+}
